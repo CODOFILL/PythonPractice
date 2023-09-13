@@ -19,3 +19,12 @@ Py module name, for ex.:
 inv bench --target=bitslicing
 ```
 > Execute run() from ./benchmarks/bitslicing.py
+
+
+## Benchmarks available
+- dictcopy
+- bitslicing
+
+
+## Examples available
+- 
