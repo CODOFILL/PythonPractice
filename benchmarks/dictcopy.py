@@ -11,19 +11,6 @@ dict_tmp = {
     't': 0
 }
 
-def ctest(stmp, setup='pass'):
-    return int(Timer(stmp, setup).timeit(number=1000000) * 1000)
-
-t1 = ctest(
-    f'deepcopy({dict_tmp})',
-    r'from copy import deepcopy'
-)
-
-t2 = ctest(
-    r'{i: j.copy() if isinstance(j, dict) else j for i,j in d.items()}',
-    f'd = {dict_tmp}'
-)
-
 alg3 = '''
 d2 = dict()
 for k, v in d.items():
@@ -32,12 +19,6 @@ for k, v in d.items():
     else:
         d2[k] = v
 '''
-
-t3 = ctest(
-    alg3,
-    f'd = {dict_tmp}'
-)
-
 
 alg4 = '''
 d2 = dict()
@@ -51,24 +32,45 @@ while i < len(l):
     i += 1
 '''
 
-t4 = ctest(
-    alg4,
-    f'd = {dict_tmp}'
-)
 
-t5 = ctest(
-    f'x = copy({dict_tmp})',
-    r'from copy import copy'
-)
-
-t6 = ctest(
-    f'x = {dict_tmp}.copy()'
-)
+def ctest(stmp, setup='pass'):
+    return int(Timer(stmp, setup).timeit(number=1000000) * 1000)
 
 
-print(f'copy.deepcopy(x) (depth=any): {t1=} ms')
-print(f'generator (depth=1): {t2=} ms')
-print(f'for (depth=1): {t3=} ms')
-print(f'while (depth=1): {t4=} ms')
-print(f'copy.copy(x) (depth=0): {t5=} ms')
-print(f'x.copy() (depth=0): {t6=} ms')
+def run():
+    print(f'1M dict copy begin...')
+    t1 = ctest(
+        f'deepcopy({dict_tmp})',
+        r'from copy import deepcopy'
+    )
+
+    t2 = ctest(
+        r'{i: j.copy() if isinstance(j, dict) else j for i,j in d.items()}',
+        f'd = {dict_tmp}'
+    )
+
+    t3 = ctest(
+        alg3,
+        f'd = {dict_tmp}'
+    )
+
+    t4 = ctest(
+        alg4,
+        f'd = {dict_tmp}'
+    )
+
+    t5 = ctest(
+        f'x = copy({dict_tmp})',
+        r'from copy import copy'
+    )
+
+    t6 = ctest(
+        f'x = {dict_tmp}.copy()'
+    )
+
+    print(f't1: {t1:<4d} ms -> copy.deepcopy(x) (depth=1 of any)')
+    print(f't2: {t2:<4d} ms -> generator (depth=1)')
+    print(f't3: {t3:<4d} ms -> for (depth=1)')
+    print(f't4: {t4:<4d} ms -> while (depth=1)')
+    print(f't5: {t5:<4d} ms -> copy.copy(x) (depth=0)')
+    print(f't6: {t6:<4d} ms -> x.copy() (depth=0)')

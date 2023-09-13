@@ -13,7 +13,8 @@ sys_path.insert(
 )
 
 from benchmarks import (
-    bitslicing
+    bitslicing,
+    dictcopy
 )
 
 #from examples import (
